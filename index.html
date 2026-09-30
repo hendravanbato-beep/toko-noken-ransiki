@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toko Noken Ransiki</title>
+<style>
+body{font-family:sans-serif;background:#0f172a;color:white;padding:20px}
+.card{background:#1e293b;padding:15px;border-radius:12px;margin:10px 0}
+button{background:#22c55e;color:black;padding:10px 20px;border:none;border-radius:8px;font-weight:bold;width:100%}
+h1{color:#22c55e}
+</style>
+</head>
+<body>
+<h1>🧶 Toko Noken Ransiki</h1>
+<p>Manokwari Selatan - Papua Barat - Mode Offline Aktif</p>
+<div class="card">
+<h3>Noken Benang Wol Kecil</h3>
+<p>Rp 150.000 - Stok 20</p>
+<button onclick="jual('Kecil')">Jual</button>
+</div>
+<div class="card">
+<h3>Noken Benang Wol Besar</h3>
+<p>Rp 250.000 - Stok 15</p>
+<button onclick="jual('Besar')">Jual</button>
+</div>
+<div class="card">
+<h3>Noken Kulit Kayu</h3>
+<p>Rp 500.000 - Stok 8</p>
+<button onclick="jual('Kulit Kayu')">Jual</button>
+</div>
+<div id="kasir" class="card">Total Penjualan Hari Ini: Rp 0</div>
+<script>
+let total=0;
+let db;
+let request=indexedDB.open("TokoNokenRansikiDB",1);
+request.onsuccess=e=>{db=e.target.result;load()};
+request.onupgradeneeded=e=>{
+db=e.target.result;
+db.createObjectStore("penjualan",{keyPath:"id",autoIncrement:true});
+};
+function jual(nama){
+let harga=nama==='Kecil'?150000:nama==='Besar'?250000:500000;
+total+=harga;
+document.getElementById('kasir').innerText="Total Penjualan Hari Ini: Rp "+total.toLocaleString('id-ID');
+let tx=db.transaction("penjualan","readwrite");
+tx.objectStore("penjualan").add({nama,tanggal:new Date(),harga});
+alert("Berhasil jual Noken "+nama+" - Tersimpan Offline!");
+}
+function load(){console.log("DB Ransiki Siap Offline")}
+</script>
+</body>
+</html>
